@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Pokédex — Kanto 151</title>
+<title>Leo og Ellas pokedex</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
@@ -23,7 +23,7 @@
   }
 
   body {
-    font-family: 'Nunito', sans-serif;
+    font-family: 'Montserrat', sans-serif;
     background: var(--dark);
     color: var(--text);
     min-height: 100vh;
@@ -56,8 +56,7 @@
     z-index: 10;
   }
   .header-logo {
-    font-family: 'Press Start 2P', monospace;
-    font-size: 14px;
+    font-size: 2rem;
     color: var(--red);
     text-shadow: 2px 2px 0 #7a1a08;
   }
@@ -95,7 +94,6 @@
     border: 2px solid var(--border);
     background: var(--card);
     color: var(--text);
-    font-family: 'Nunito', sans-serif;
     font-size: 14px; font-weight: 600;
     outline: none;
     transition: border-color 0.2s;
@@ -108,8 +106,6 @@
   thead th {
     text-align: left;
     padding: 10px 14px;
-    font-family: 'Press Start 2P', monospace;
-    font-size: 8px;
     color: var(--muted);
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -122,13 +118,9 @@
   }
   tbody tr:hover { background: var(--shine); }
   tbody td { padding: 10px 14px; vertical-align: middle; }
-  .num-cell {
-    font-family: 'Press Start 2P', monospace;
-    font-size: 9px; color: var(--muted); width: 60px;
-  }
-  .img-cell { width: 60px; }
+
   .img-cell img {
-    width: 48px; height: 48px;
+    width: 70px; height: 70px;
     image-rendering: pixelated;
     filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
     transition: transform 0.2s;
@@ -178,7 +170,7 @@
     top: 50%; left: 50%;
     transform: translate(-50%, -50%);
   }
-  .detail-num { font-family: 'Press Start 2P', monospace; font-size: 11px; color: var(--muted); margin-bottom: 8px; }
+  .detail-num {  font-size: 11px; color: var(--muted); margin-bottom: 8px; }
   .detail-img {
     width: 160px; height: 160px;
     image-rendering: pixelated;
@@ -186,7 +178,6 @@
     position: relative; z-index: 1;
   }
   .detail-name {
-    font-family: 'Press Start 2P', monospace;
     font-size: 16px; text-transform: capitalize;
     margin-top: 14px; text-align: center;
   }
@@ -194,7 +185,6 @@
 
   .detail-body { padding: 24px; }
   .detail-section-title {
-    font-family: 'Press Start 2P', monospace;
     font-size: 8px; color: var(--muted);
     letter-spacing: 0.1em; text-transform: uppercase;
     margin-bottom: 14px;
@@ -226,7 +216,6 @@
   .loading {
     display: flex; align-items: center; justify-content: center;
     height: 60vh;
-    font-family: 'Press Start 2P', monospace;
     font-size: 10px; color: var(--muted); gap: 12px;
   }
   .spinner {
@@ -255,8 +244,8 @@ const { useState, useEffect } = React;
 const TYPE_COLORS = {
   fire:'#fd7d24', water:'#4592c4', grass:'#9bcc50', electric:'#eed535',
   psychic:'#f366b9', ice:'#51c4e7', dragon:'#6a6fc9', dark:'#707070',
-  fairy:'#fdb9e9', normal:'#a4acaf', fighting:'#d56723', flying:'#3dc7ef',
-  poison:'#b97fc9', ground:'#f7de3f', rock:'#a38c21', bug:'#729f3f',
+  fe:'#fdb9e9', normal:'#a4acaf', fighting:'#d56723', flying:'#3dc7ef',
+  gift:'#b97fc9', ground:'#f7de3f', rock:'#a38c21', bug:'#729f3f',
   ghost:'#7b62a3', steel:'#9eb7b8'
 };
 const LIGHT_TYPES = ['grass','electric','ice','fairy','normal','flying','ground','steel'];
@@ -387,7 +376,7 @@ function App() {
   if (loading) return (
     <div className="loading">
       <div className="spinner" />
-      Loading Pokédex...
+      Laster Pokédex...
     </div>
   );
 
@@ -396,15 +385,15 @@ function App() {
       <div className="header">
         <div className="pokeball-icon" />
         <div>
-          <div className="header-logo">Pokédex</div>
-          <div className="header-sub">Original 151 · Kanto Region</div>
+          <div className="header-logo">Leo og Ellas Pokédex</div>
+          <div className="header-sub">Original 151</div>
         </div>
       </div>
 
       <div className="search-bar">
         <input
           type="text"
-          placeholder="Search by name or number..."
+          placeholder="Søk"
           value={search}
           onChange={e => setSearch(e.target.value)}
         />
@@ -416,7 +405,7 @@ function App() {
             <tr>
               <th>#</th>
               <th></th>
-              <th>Name</th>
+              <th>Navn</th>
               <th>Type</th>
             </tr>
           </thead>
@@ -425,7 +414,7 @@ function App() {
               <tr key={p.id} onClick={() => setSelected(p)}>
                 <td className="num-cell">#{String(p.id).padStart(3, '0')}</td>
                 <td className="img-cell"><img src={p.sprite} alt={p.name} /></td>
-                <td className="name-cell">{p.name}</td>
+                <td className="name-cell">{p.name.toUpperCase()}</td>
                 <td>{p.types.map(t => <TypeBadge key={t} type={t} />)}</td>
               </tr>
             ))}
