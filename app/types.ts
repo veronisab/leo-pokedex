@@ -1,3 +1,33 @@
+export type TPokemon = {
+  id: number;
+  name: string;
+  height: number;
+  weight: number;
+  cries?: {
+    latest?: string;
+    legacy?: string;
+  };
+  sprites: {
+    front_default?: string | null;
+    other?: {
+      'official-artwork'?: {
+        front_default?: string | null;
+      };
+    };
+  };
+  types: {
+    type: {
+      name: string;
+    };
+  }[];
+  stats: {
+    base_stat: number;
+    stat: {
+      name: string;
+    };
+  }[];
+};
+
 export const TYPE_COLORS: { [key: string]: string } = {
   fire:'#fd7d24', water:'#4592c4', grass:'#9bcc50', electric:'#eed535',
   psychic:'#f366b9', ice:'#51c4e7', dragon:'#6a6fc9', dark:'#707070',

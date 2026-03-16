@@ -1,30 +1,19 @@
 import { useEffect, useState, useRef } from "react";
 import TypeBadge from "./TypeBadge";
 import StatBar from "./StatBar";
+import { TPokemon } from "./types";
 
-type DetailsProps = {
+type TDetailsProps = {
   pokemon: any;
   onClose: () => void;
   onPrev: (() => void) | null;
   onNext: (() => void) | null;
 };
 
-type TDetail = {
-    sprites: any;
-    types: any[];
-    height: number;
-    weight: number;
-    stats: any[];
-    cries?: {
-      latest?: string;
-      legacy?: string;
-    };
-}
-
-export default function Details({ pokemon, onClose, onPrev, onNext }: DetailsProps) {
-  const [detail, setDetail] = useState<TDetail | null>(null);
+export default function Details({ pokemon, onClose, onPrev, onNext }: TDetailsProps) {
+  const [detail, setDetail] = useState<TPokemon | null>(null);
   const [playing, setPlaying] = useState(false);
-  const audioRef = useRef(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     setDetail(null);
@@ -36,10 +25,10 @@ export default function Details({ pokemon, onClose, onPrev, onNext }: DetailsPro
   }, [pokemon.id]);
 
   useEffect(() => {
-    function handleKey(e) {
-      if (e.key === 'ArrowLeft' && onPrev) onPrev();
-      if (e.key === 'ArrowRight' && onNext) onNext();
-      if (e.key === 'Escape') onClose();
+    function handleKey(event: KeyboardEvent) {
+      if (event.key === 'ArrowLeft' && onPrev) onPrev();
+      if (event.key === 'ArrowRight' && onNext) onNext();
+      if (event.key === 'Escape') onClose();
     }
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
@@ -57,17 +46,32 @@ export default function Details({ pokemon, onClose, onPrev, onNext }: DetailsPro
   }
 
   const img = detail
-    ? (detail.sprites.other['official-artwork']?.front_default || detail.sprites.front_default)
+    ? (detail.sprites.other?.['official-artwork']?.front_default || detail?.sprites.front_default)
     : null;
 
   return (
     <div className="detail-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
-      <button className="btn nav-btn prev" onClick={onPrev} disabled={!onPrev}>&#8592;</button>
-      <button className="btn nav-btn next" onClick={onNext} disabled={!onNext}>&#8594;</button>
+      <button
+  className="btn nav-btn prev"
+  onClick={onPrev ?? undefined}
+  disabled={!onPrev}
+>
+  &#8592;
+</button>
+<button
+  className="btn nav-btn next"
+  onClick={onNext ?? undefined}
+  disabled={!onNext}
+>
+  &#8594;
+</button>
       <div className="detail-card">
-        <div className="detail-hero">
+  <div
+    className="detail-hero"
+    style={{ ['--pokemon-num' as any]: `"${String(pokemon.id).padStart(2,'0')}"` } as React.CSSProperties}
+  >
           <button className="btn close-btn" onClick={onClose}>×</button>
-          <div className="detail-num">#{String(pokemon.id).padStart(3, '0')}</div>
+
           {img
             ? <img className="detail-img" src={img} alt={pokemon.name} />
             : <div style={{width:160,height:160,display:'flex',alignItems:'center',justifyContent:'center'}}><div className="spinner"/></div>
@@ -77,9 +81,8 @@ export default function Details({ pokemon, onClose, onPrev, onNext }: DetailsPro
             {detail && detail.types.map(t => <TypeBadge key={t.type.name} type={t.type.name} />)}
           </div>
           {detail && detail.cries && (
-            <button className={`btn cry-btn${playing ? ' playing' : ''}`} onClick={playCry}>
+            <button className={`btn ${playing ? ' playing' : ''}`} onClick={playCry}>
               <span className="cry-icon">{playing ? '🔊' : '🔈'}</span>
-              {playing ? 'Spiller...' : 'Hør skrik'}
             </button>
           )}
         </div>

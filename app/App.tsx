@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import PokemonTable from './PokemonTable';
 import Details from './Details';
+import { TPokemon } from './types';
+
 
 async function fetchPokemonList() {
   const list = await Promise.all(
@@ -11,17 +13,25 @@ async function fetchPokemonList() {
       return {
         id,
         name: d.name,
-        sprite: d.sprites.front_default,
-        types: d.types.map(t => t.type.name),
+        sprites: d.sprites,
+        types: d.types.map((t: any) => t.type.name),
+        height: d.height,
+        weight: d.weight,
+        stats: d.stats.map((s: any) => ({
+          name: s.stat.name,
+          value: s.base_stat,
+        })),
+        cries: d.cries,
       };
     })
   );
   return list;
 }
 
+
+
 export default function App() {
-  const [selected, setSelected] = useState(null);
-  const [search, setSearch] = useState('');
+  const [selected, setSelected] = useState<TPokemon | null>(null);
 
   const { data: pokemon = [], isLoading } = useQuery({
     queryKey: ['pokemonList'],
@@ -38,13 +48,27 @@ export default function App() {
 
   return (
     <>
-      <PokemonTable pokemon={pokemon} search={search} setSearch={setSearch} setSelected={setSelected} />
+      <PokemonTable pokemon={pokemon} setSelected={setSelected} />
       {selected && (
         <Details
           pokemon={selected}
           onClose={() => setSelected(null)}
-          onPrev={selected.id > 1 ? () => setSelected(pokemon.find(p => p.id === selected.id - 1)) : null}
-          onNext={selected.id < pokemon.length ? () => setSelected(pokemon.find(p => p.id === selected.id + 1)) : null}
+          onPrev={
+            selected.id > 1
+              ? () => {
+                  const prev = pokemon.find(p => p.id === selected.id - 1);
+                  if (prev) setSelected(prev);
+                }
+              : null
+          }
+          onNext={
+            selected.id < pokemon.length
+              ? () => {
+                  const next = pokemon.find(p => p.id === selected.id + 1);
+                  if (next) setSelected(next);
+                }
+              : null
+          }
         />
       )}
     </>
