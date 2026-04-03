@@ -7,7 +7,7 @@ import { TPokemon } from './types';
 
 async function fetchPokemonList() {
   const list = await Promise.all(
-    Array.from({ length: 151 }, (_, i) => i + 1).map(async id => {
+    Array.from({ length: 251 }, (_, i) => i + 1).map(async id => {
       const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
       const d = await res.json();
       return {
